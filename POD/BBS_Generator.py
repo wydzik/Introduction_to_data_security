@@ -3,9 +3,12 @@ import random
 
 
 def isPrime2(n):
+    """Function that checks if n is prime
+        Arguments:
+            :n: integer to check"""
     if n == 2 or n == 3: return True
     if n % 2 == 0 or n < 2: return False
-    for i in range(3, int(n ** 0.5) + 1, 2):  # only odd numbers
+    for i in range(3, int(n ** 0.5) + 1, 2):
         if n % i == 0:
             return False
 
@@ -13,6 +16,7 @@ def isPrime2(n):
 
 
 def calculate_M_number():
+    """Function to find p and q that are big and congruent with 3 mod 4"""
     q = (int)(random.uniform(2 ** 10, 2 ** 16))
     p = (int)(random.uniform((2 ** 10) + 1, (2 ** 16) + 1))
     if (p == q):
@@ -28,12 +32,12 @@ def calculate_M_number():
             check = False
     return p * q
 
-
 def coprime(a, b):
+    """Function that checks if a and b are coprime"""
     return bltin_gcd(a, b) == 1
 
-
 def calculate_first_x(M):
+    """Function that calculates first element of sequence from x0 = x^2 mod M equation"""
     x = (int)(random.uniform(2, 100))
     check = True
     while check:
@@ -43,8 +47,12 @@ def calculate_first_x(M):
             x = +1
     return x
 
-
 def generate_nums(x, M, iter):
+    """Generating rest of elements
+        Arguments:
+            :x: first element
+            :M: M number
+            :iter: number of elements"""
     nums = []
     while iter != 0:
         next_num = (x ** 2) % M
@@ -53,14 +61,15 @@ def generate_nums(x, M, iter):
         iter = iter - 1
     return nums
 
-
 def get_bits_from_nums_array(nums):
+    """Getting last bits from every element
+        Arguments:
+            :nums: list of calculated elements"""
     bits = []
     for num in nums:
         bits.append(bin(num)[-1])
 
     return bits
-
 
 def proportional_test(bits):
     """Returns the number of bits with value of 0"""
@@ -70,8 +79,8 @@ def proportional_test(bits):
             zero_counter += 1
     return zero_counter
 
-
 def series_test(bits):
+    """Returns the ammount of series with specific length"""
     counter = 0
     len_1 = 0
     len_2 = 0
@@ -103,8 +112,8 @@ def series_test(bits):
         previous_bit = b
     return [len_1, len_2, len_3, len_4, len_5, len_long, len_toolong]
 
-
 def poker_test(bits):
+    """Test that returns ammount of 16 different combinations of bits"""
     combination_counter=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
     i=0
     while i<=(len(bits)-3):
@@ -144,12 +153,14 @@ def poker_test(bits):
         i=i+4
     return combination_counter
 
-passed_ctr = 0
 propotional_pass_ctr=0
 series_pass_ctr=0
 long_series_pass_ctr=0
 poker_pass_ctr=0
-for a in range(0, 1000):
+passed_all=0
+#Loop that generates random bit sequence and tests its randomness
+for a in range(0, 5000):
+    passed_ctr = 0
     M = calculate_M_number()
     x = calculate_first_x(M)
     a = generate_nums(x, M, 20000)
@@ -164,6 +175,7 @@ for a in range(0, 1000):
 
     if (prop > 9725 and prop < 10275):
         propotional_pass_ctr+=1
+        passed_ctr+=1
 
     if ((serie[0] > 2315 and serie[0] < 2685) and
             (serie[1] > 1114 and serie[1] < 1386) and
@@ -172,13 +184,19 @@ for a in range(0, 1000):
             (serie[4] > 103 and serie[4] < 209) and
             (serie[5] > 103 and serie[5] < 209)):
         series_pass_ctr+=1
+        passed_ctr+=1
     if serie[6] == 0:
         long_series_pass_ctr+=1
+        passed_ctr+=1
     if ((poker_value>2.16) and (poker_value<46.17)):
         poker_pass_ctr+=1
-
+        passed_ctr+=1
+    if passed_ctr==4:
+        passed_all+=1
 
 print(propotional_pass_ctr)
 print(series_pass_ctr)
 print(long_series_pass_ctr)
 print(poker_pass_ctr)
+print(passed_all)
+
